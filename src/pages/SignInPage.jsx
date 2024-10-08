@@ -1,6 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Assuming you're using react-router for navigation
+import { useAuth } from '../context/AuthContext'; // Import the Auth context
 
 const SignInPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Get the login function from context
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:4000/api/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log('data', data);
+        // Store the JWT token in localStorage
+        localStorage.setItem('token', data.token);
+
+        // Call the login function to update user state in context
+        login(data.user);
+        navigate('/');
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
+    }
+  };
+
   return (
     <div className="flex items-center justify-center py-6">
       <div className="w-full max-w-md p-8 space-y-8 bg-[#F4F4F4] rounded-lg shadow-lg border border-[#EAEAEA]">
@@ -8,14 +45,16 @@ const SignInPage = () => {
           <h2 className="text-4xl font-extrabold text-center text-[#000000]">Sign In</h2>
           <p className="mt-2 text-center text-[#2B2B2B]">Access your account</p>
         </div>
-        <form className="mt-8 space-y-6">
+        {error && <p className="text-center text-red-500">{error}</p>}
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <input
                 id="email"
                 name="email"
                 type="email"
-                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="appearance-none rounded-md w-full px-4 py-3 bg-[#FFFFFF] text-[#2B2B2B] placeholder-[#A3A3A3] border border-[#EAEAEA] focus:outline-none focus:ring-2 focus:ring-[#000000] focus:ring-offset-2 sm:text-sm"
                 placeholder="Email address"
@@ -26,7 +65,8 @@ const SignInPage = () => {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 className="appearance-none rounded-md w-full px-4 py-3 bg-[#FFFFFF] text-[#2B2B2B] placeholder-[#A3A3A3] border border-[#EAEAEA] focus:outline-none focus:ring-2 focus:ring-[#000000] focus:ring-offset-2 sm:text-sm"
                 placeholder="Password"
