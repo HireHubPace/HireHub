@@ -87,7 +87,7 @@ const SignInPage = () => {
               </label>
             </div>
             <div className="text-sm">
-              <a href="#" className="font-medium text-[#000000] hover:text-[#2B2B2B]">
+              <a href="/forgot-password" className="font-medium text-[#000000] hover:text-[#2B2B2B]">
                 Forgot your password?
               </a>
             </div>

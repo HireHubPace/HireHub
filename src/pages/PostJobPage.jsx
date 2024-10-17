@@ -32,7 +32,7 @@ const PostJobPage = () => {
             });
 
             const data = await response.json();
-
+            console.log("data",data);
             if (response.ok) {
                 setSuccess(true); // Set success state to true
                 setTitle('');

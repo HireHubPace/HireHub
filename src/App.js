@@ -7,8 +7,11 @@ import SignUpPage from './pages/SignUpPage';
 import Layout from './components/Layout';
 import PostJobPage from './pages/PostJobPage';
 import { AuthProvider } from './context/AuthContext';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const App = () => {
+  const [loading, setLoading] = useState(true);
   return (
     <AuthProvider>
     <Router>
@@ -19,6 +22,8 @@ const App = () => {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/post-job" element={<PostJobPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </Layout>
     </Router>
